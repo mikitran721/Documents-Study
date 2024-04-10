@@ -303,3 +303,62 @@ ConNguoi::getInfo();
 ConNguoi::getInfo('name', 'age');
 //output: Call method: getInfo & arguments: name-age
 ```
+# 22. Magic methods sleep & wakeup
+## __sleep()
+- Phương thức __sleep() sẽ được gọi khi ta thực hiện `serialize()`.
+- Thông thường khi ta `serialize()` một obj thì nó sẽ trả về all các prop trong obj đó. Nhưng nếu sd `__sleep()` thì ta có thể quy định được các prop có thể trả về. `__sleep()` luôn trả về giá trị là một array.
+- syntax:
+```php
+public function __serialize()
+{
+    return ['prop1', 'prop2', ..., 'propn'];
+}
+```
+- VD:
+```php
+class ConNguoi
+{
+    private $name = "poo phoong";
+    private $age = 200;
+
+    public function __sleep()
+    {
+        return array('name');
+    }
+}
+```
+## __wakeup()
+- phương thức __wakeup() sẽ đc gọi khi ta unserialize() obj.
+- Thường đc sử dụng để thực thi một hoặc nhiều hành động nào đó khi đối tượng được unsirialize().
+- syntax:
+```php
+public function __wakeup()
+{
+    //code
+}
+```
+- VD:
+```php
+class ConNguoi
+{
+    private $name = "poo phoong";
+    private $age = 200;
+
+    public function __sleep()
+    {
+        return array('name');
+    }
+
+    public function getName()
+    {
+        echo $this->name;
+    }
+
+    public function __wakeup()
+    {
+        $this->getName();
+    }
+}
+
+unserialize(serialize(new ConNguoi));
+```
