@@ -234,3 +234,72 @@ unset($cn->name); //Remove: name
 
 unset($cn->age); //Remove: age
 ```
+# 21. Magic methods with function __call() & __callStatic()
+## __call()
+- Phương thức __call() sẽ đc gọi khi ta gọi một method ko được phép truy cập từ bên ngoài | ko tồn tại. Ko áp dung với static function.
+- Syntax:
+```php
+public function __call($methodName, $arguments)
+{
+    //code
+}
+```
+- VD:
+```php
+class ConNguoi
+{
+    private $name = 'Poo Phoong';
+    private $age = 100;
+
+    public function __call($methodName, $arguments)
+    {
+        echo 'Call method: ' . $methodName . ' & arguments: ' . implode('-' , $arguments);
+    }
+
+    private function getInfo()
+    {
+        echo $this->name + ' - ' + $this->age;
+    }
+}
+
+$cn = new ConNguoi();
+
+$cn->getInfo();
+//output: Call method: getInfo & arguments:
+
+$cn->getInfo('name','age');
+//output: Call method: getInfo & arguments: name - age
+```
+## __callStatic()
+- phương thức __callStatic() sẽ đc gọi khi ta gọi một function `tĩnh` ko được phép truy cập từ bên ngoài hoặc ko tồn tại
+- syntax:
+```php
+public static function __callStatic($methodName, $arguments)
+{
+    //code
+}
+```
+- VD: 
+```php
+class ConNguoi
+{
+    private $name = 'Poo Phoong';
+    private $age = 150;
+
+    public static function __callStatic($methodName, $arguments)
+    {
+        echo 'Call method: ' . $methodName . ' & arguments: ' . implode('-' , $arguments);
+    }
+
+    private static function getInfo()
+    {
+        echo $this->name . "+" . $this->age;
+    }
+}
+
+ConNguoi::getInfo();
+//output: Call method: getInfo & arguments:
+
+ConNguoi::getInfo('name', 'age');
+//output: Call method: getInfo & arguments: name-age
+```
