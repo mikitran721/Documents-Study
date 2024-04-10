@@ -362,3 +362,54 @@ class ConNguoi
 
 unserialize(serialize(new ConNguoi));
 ```
+# 23. Magic methods __toString() & __invoke()
+## __toString()
+- Bình thường ta không thể dùng `echo` với 1 instance của obj - Vì nó không phải là `string`. Nhưng với __toString() sẽ được gọi khi ta dùng obj như 1 string.
+- syntax:
+```php
+public function __toString()
+{
+    //code
+}
+```
+- VD:
+```php
+class ConNguoi
+{
+    private $name = 'Poo Phoong';
+    private $age = 20;
+
+    public function __toString()
+    {
+        return 'Phuong thuc __toString() duoc goi';
+    }
+}
+echo new ConNguoi();
+//output: Phuong thuc __toString() duoc goi
+```
+## __invoke()
+- Phương thức __invoke() sẽ được gọi khi chúng ta sử dụng đối tượng như một hàm.
+- syntax:
+```php
+public function __invoke(arguments)
+{
+    //code
+}
+```
+- VD:
+```php
+class ConNguoi
+{
+    private $name = "poo phoong";
+    private $age = 200;
+
+    public function __invoke()
+    {
+        echo 'Phuong thuc __invoke() duoc goi';
+    }
+}
+
+$cn = new ConNguoi();
+$cn();
+//output: Phuong thuc __invoke() duoc goi
+```
