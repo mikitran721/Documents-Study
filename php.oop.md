@@ -163,9 +163,74 @@ $cn->age(); //khong ton tai prop
 
 # 20. Magic methods ISSET & UNSET
 ## __ISSET()
-- Phương thức __isset() sẽ được gọi khi ta thực hiện kiểm tra một prop không được phép truy cập | ko tồn tại của một obj. (gồm isset() và empty() ).
+- Phương thức __isset() sẽ được gọi khi ta thực hiện kiểm tra một prop không được phép truy cập | ko tồn tại của một obj. (khi su dung: isset() và empty() ).
 - __isset() không sử dụng được với static prop.
 - syntax:
 ```php
+public function __isset($name)
+{
+    //$name: là prop cần kiểm tra
+}
+```
+- VD không sử dụng __isset()
+```php
+class ConNguoi
+{
+    private $name;
+}
 
+$cn = new ConNguoi();
+
+isset($cn->name); //false
+
+empty($cn->name); //true
+```
+- VD sử dụng __isset()
+```php
+class ConNguoi
+{
+    private $name;
+
+    public function __isset($name)
+    {
+        echo "Check: " . $name;
+    }
+}
+
+$cn = new ConNguoi();
+
+isset($cn->name); //Check: name
+empty($cn->name); //Check: name
+isset($cn->age); //Check: age
+```
+## __UNSET()
+- Phương thức __unset() sẽ được gọi khi ta thực hiện hủy (unset) một prop không được phép truy cập hay ko tồn tại của obj cụ thể. Cụ thể là dùng hàm unset(). Phương thức __unset() không áp dụng với static prop;
+- VD không sử dụng __unset()
+```php
+class ConNguoi
+{
+    private $name;
+}
+
+$cn = new ConNguoi();
+
+unset($cn->name); //output: cannot access private property ConNguoi::$name
+```
+- VD khi sử dụng __unset()
+```php
+class ConNguoi
+{
+    private $name;
+
+    public function __unset($name)
+    {
+        echo "Remove: " . $name;
+    }
+}
+
+$cn = new ConNguoi();
+
+unset($cn->name); //Remove: name
+
+unset($cn->age); //Remove: age
 ```
