@@ -92,3 +92,138 @@ $cn = new People\ConNguoi();
 
 echo $cn->getName();
 ```
+# 12. Traits trong PHP
+## 12.1 Traits 01 - The concept
+- PHP là ngôn ngữ chỉ hỗ trợ đơn kế thừa, nên việc muốn sử dụng lại source code một cách nhiều lần là khó khăn. Từ PHP 5.4 trở lên đã hỗ trợ Traits để khắc phục.
+- Traits là 1 module giúp ta có thể sử dụng lại các phương thức được khai báo trong `trait` vào các class khác nhau thay vì kế thừa như trước.
+- Các đặc điểm của Traits:
+  - Có chức năng gom lại các method, prop mà ta muốn sử dụng lại nhiều lần.
+  - Không thể khởi tạo được.
+  - Các method trong Traits có thể bị override lại trong class sử dụng nó.
+  - có thể sử dụng `namespace` trong Traits.
+  - Có thể sử dụng `trait` lồng nhau
+- Cú pháp:
+```php
+trait A
+{
+  //code
+}
+
+trait B
+{
+  use A;
+  //code
+}
+```
+- Sử dụng Trait trong class, sử dụng cú pháp:
+```php
+class ClassName
+{
+  use TraitName;
+  
+  //code
+}
+```
+- Ưu tiên phương thức trong Traits:
+  - khi cùng lúc 2 class có cùng 1 method giống tên nhau thì sẽ tạo ra lỗi khi sử dụng. Để khắc phục có thể thực hiện
+  - 1. Override lại tên phương thức bị trùng tại class sử dụng traits
+  - 2. Sử dụng cú pháp  vơi key `insteadof` sau khi khai báo sử dụng traits:
+  ```php
+  class ConNguoi
+  {
+    private $name;
+    private $age;
+
+    use SetGetName, SetGetAge {
+      SetGetAge::getAll insteadof SetGetAge;
+    }
+  }
+  ```
+- VD:
+```php
+//file: SetGetName
+trait SetGetName
+{
+  public function setName($name)
+  {
+    $this->name = $name;
+  }
+
+  public function getName()
+  {
+    return $this->name;
+  }
+}
+
+//file: SetGetAge
+namespace SetGetAge;
+
+trait SetGetAge
+{
+  public function setAge($age)
+  {
+    $this->age = $age;
+  }
+
+  public function getAge()
+  {
+    return $this->age;
+  }
+}
+
+//file: index.php
+include 'SetGetName.php';
+include 'SetGetAge.php';
+
+//use namespace
+use SetGetAge/SetGetAge;
+
+class ConNguoi
+{
+  private $name;
+  private $age;
+
+  //goi Traits
+  use SetGetName;
+  use SetGetAge;
+}
+
+$cn = new ConNguoi();
+
+$cn->setName('Poo Phoong');
+echo $cn->getName();
+
+$cn->setAge(100);
+echo $cn->getAge();
+```
+## 12.2 Traits 02
+- Trong Traits hỗ trợ ta tạo cả phương thức tĩnh và thuộc tính tĩnh như class bình thường. Nhưng thuộc tính tĩnh chỉ ảnh hưởng bên trong 1 class thôi, còn khi gọi nó ở một class khác thì giá trị lại bình thường.Tức là ở 2 class khác nhau gọi sử dụng Traits thì không ảnh hưởng giá trị sang nhau.
+- Trong traits cũng hỗ trợ tạo phương thức `abstract` và khi class gọi sử dụng trait này cũng phải khai báo định nghĩa lại method đó.
+- Có thể thay đổi `visibility` của phương thức trong traits với cú pháp
+```php
+use methodName as visibility newName; 
+//visibility: public, protected, private
+//newName la ten alias cho method
+```
+- VD đổi visibility
+```php
+trait Name
+{
+  private $name = 'poo phoong';
+
+  private function getName()
+  {
+    return $this->name;
+  }
+}
+
+class ConNguoi
+{
+  use Name {
+    getName as public;
+  }
+}
+
+$cn = new ConNguoi();
+echo $cn->getName();
+```
