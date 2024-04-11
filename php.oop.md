@@ -413,3 +413,80 @@ $cn = new ConNguoi();
 $cn();
 //output: Phuong thuc __invoke() duoc goi
 ```
+# 24. Magic methods __set_state() & __clone() & __debugInfo()
+## __set_state()
+- Phương thức này sẽ được gọi khi ta var_export() object.
+- syntax:
+```php
+public static function __set_state($arr)
+{
+    //code
+}
+```
+- VD:
+```php
+class ConNguoi
+{
+    private $name = "Poo Phoong";
+    private $ate = 200;
+
+    public static __set_state(array $arr)
+    {
+        foreach ($arr as $key => $value) {
+            echo $key . '->' . $value . '<br/>';
+        }
+    }
+}
+
+$cn = new ConNguoi();
+eval(var_export($cn, true) . ';');
+```
+## __clone()
+- Phương thức __clone() đươc gọi khi ta clone object.
+- syntax:
+```php
+public function __clone()
+{
+    //code
+}
+```
+- VD:
+```php
+class ConNguoi
+{
+    public $name = 'Poo Phoong';
+    public $age - 200;
+
+    public function __clone()
+    {
+        echo '__clone() duoc goi';
+    }
+}
+
+$cn = new ConNguoi();
+
+$cn2 = clone $cn;
+//output: __clone() duoc goi
+
+echo $cn2->name;
+```
+## __debugInfo()
+- Phương thức __debugIno() được gọi khi ta var_dump() obj. Thường, khi ta var_dump() obj thì nó sẽ trả về tất cả các prop và giá trị của nó, nhưng khi ta sử dụng __debugInfo() thì ta có thể tùy chỉnh thông số trả về.
+- VD:
+```php
+class ConNguoi
+{
+    public $name = "poo phoong";
+    public $age = 300;
+
+    public function __debugInfo()
+    {
+        return [
+            'name' => $this->name,
+        ];
+    }
+}
+
+$cn = new ConNguoi();
+var_dump($cn);
+```
