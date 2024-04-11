@@ -8,3 +8,19 @@
 - Việc cho phép môi trường bên ngoài tác động lên các dữ liệu nội tại của obj là hoàn toàn tùy thuộc vào coder.
 ## 5.4 Tính trừu tượng
 - Thể hiện rõ nhất ở việc, một obj ban đầu có thể có một số đặc điểm chung cho nhiều obj # như là sự mở rộng của nó nhưng bản thân obj ban đầu có thể không có biện pháp thi hành (vd: việc định nghĩa hàm mà không mô tả nó)
+# 7. Lớp trừu tượng Abstract
+- Một lớp được khai báo là `abstract` thì đó là lớp trừu tượng. Syntax:
+```php
+abstract class ClassName
+{
+    //code
+}
+```
+- Cấu trúc `abstract + visibility`.
+- Các đặc điểm của abstract class:
+  - các method khi được khai báo là `abstract` thì chỉ được định nghĩa chứ không được viết code xử lý trong nó.
+  - Nếu ko là phương thức `abstract` thì vẫn khai báo và viết code như bình thường.
+  - phương thức `abstract` chỉ có thể khai báo trong class abstract.
+  - Không thể khởi tạo một abstract class. Do đó, các method khi khai báo chỉ được ở mức `public | protected`.
+  - Thuộc tính không được khai báo với key `abstract`.
+  - Phải định nghĩa lại các abstract method của abstract class đó khi kế thừa.
