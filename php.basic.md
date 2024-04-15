@@ -357,3 +357,40 @@ else {
 - Ta sử dụng hàm `copy(file1, file2)` để copy file
 ### Xóa file
 - Ta sử dụng hàm `unlink(file)` để xóa file.
+## 17.6 VD upload file
+- Cũng giống get và post thì server nhận dữ liệu file gửi lên bằng $_FILES, biến $_FILES này là 1 mảng 2 chiều có dạng sau:
+```php
+$_FILES['nameInputFile']['properties']
+/*
+Trong đó:
+- nameInputFile là tên của input file
+- properties có 5 thuộc tính:
+    + name: tên của file mới upload lên
+    + type: kiểu dữ liệu của file
+    + tmp_name: đường dẫn tạm của file ở server
+    + error: Trạng thái của file. 0 là không có lỗi
+    + size: dung lượng của file đơn vị là bytes
+*/
+```
+- Và khi upload hoàn tất, ta dùng hàm `move_uploaded_file(fileName, destination)` để hoàn tất.
+- VD:
+```php
+<form action="" method="post" enctype="multipart/form-data">
+    <input type="file" name="fileUpload" value="" />
+    <input type="submit" name="up" value="Upload" />
+</form>
+<?php
+if (isset($_POST['up']) && isset($_FILES['fileUpload'])) {
+    if ($_FILES['fileUpload']['error'] > 0)
+        echo "Loi upload";
+    else {
+        move_uploaded_file($_FILES['fileUpload']['tmp_name'], 'upload/' . $_FILES['fileUpload']['name']);
+        echo "upload thanh cong";
+        echo "Path: upload/" . $_FILES['fileUpload']['name'] ;
+        echo "Style: " . $_FILES['fileUpload']['type'];
+        echo "Capacity: " .$_FILES['fileUpload']['size'] / 1024 . 'KB';
+    }
+}
+?>
+
+```
