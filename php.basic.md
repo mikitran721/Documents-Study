@@ -245,3 +245,115 @@ print_r(array_diff($arr1, $arr2));
 
 ## is_array($array)
 - Kiểm tra $array có phải là mảng ko, nếu đúng trả về TRUE ngược lại là FALSE.
+
+# 17. CÁC HÀM XỬ LÝ FILE
+## 17.1 Mở file
+- dùng cú pháp
+```php
+@fopen(command, mode)
+//command: đường dẫn
+//mode: quyền truy cập vào file
+/*
+    r: read only
+    r+: Read + write
+    w: write only
+    w+: write + read. Nếu file tồn tại thì nội dung cũ bị xóa đi và ghi lại nội dung mới, còn nếu file chưa tồn tại sẽ tạo file mới
+    a: write; nếu file tồn tại sẽ ghi tiếp nội dung phía dưới, nếu file ko tồn tại sẽ tạo file mới
+    a+: read + write; nếu file tồn tại sẽ ghi tiếp nội dung phía dưới, nếu file ko tồn tại sẽ tạo file mới
+    b: mở dưới dạng nhị phân binary
+*/
+```
+- VD:
+```php
+$file = @open('data.txt', 'r');
+if(!$file)
+    echo 'mo file no ok';
+else
+    echo 'mo file ok';
+```
+## 17.2 Đọc file
+- Có 3 cách đọc file
+### Đọc từng ký tự
+- Sử dụng hàm `feof` để kiểm tra xem đã ở vị trí cuối của file chưa và hàm `fgetc` để đọc từng ký tự của file.
+- VD
+```php
+$file = @popen('data.txt', 'r');
+if(!$file)
+    echo 'mo file no ok';
+else {
+    while (!feof($file)) {
+        echo fgetc($file);
+    }
+}
+```
+### Đọc từng dòng
+- C1: Ở cách này ta vẫn dùng `feof` để kiểm tra vị trí đang duyệt đã ở cuối cùng của file chưa và dùng `fgets` để in ra từng hàng của file.
+- VD
+```php
+$file = @popen('data.txt', 'r');
+if(!$file)
+    echo 'mo file no ok';
+else {
+    while (!feof($file)) {
+        echo fgets($file);
+    }
+}
+```
+- C2: Hoặc ta có thể dùng hàm `file` để lấy file theo dạng mảng với mỗi dòng của file là một phần tử của mảng.
+- VD
+```php
+$data = @file('data.txt', 'r');
+if(!$file)
+    echo 'mo file no ok';
+else {
+    foreach ($data as $value) {
+        echo $valule;
+    }
+}
+```
+### Đọc hết file 1 lần
+- Ta dùng hàm `fread($file, $filesize)`; Nó sẽ load nặng và lâu nếu file lớn.
+- VD
+```php
+$file = @popen('data.txt', 'r');
+if(!$file)
+    echo 'mo file no ok';
+else {
+    echo fread($file, filesize('data.txt'));
+}
+```
+## 17.3 Ghi file
+- Để ghi file bắt buộc file phải được mở ở mode cho phép ghi và tiếp đó dùng hàm `fwrite` để ghi dữ liệu.
+- VD
+```php
+$file = @popen('data.txt', 'w');
+if(!$file)
+    echo 'mo file no ok';
+else {
+    $data = "new content";
+    fwrite($file, $data);
+    fclose($file);
+}
+```
+
+## 17.4 Đóng file
+- Khi mở luôn luôn phải đóng file lại. Ta dùng hàm `fclose` để đóng file.
+- cú pháp `fclose($file)`
+
+## 17.5 Các hàm khác
+### Kiểm tra file tồn tại
+- Sử dụng hàm `file_exists()` để kiểm tra sự tồn tại của file, true nếu có và false nếu sai.
+### Kiểm tra quyền ghi
+- Dùng hàm `is_writeable()` để xem, nếu có thì true, sai là false.
+### Lấy nội dung của file
+- Để lấy nội dung của một file, ta có thể dùng `file_get_contents()`.
+### Tạo thư mục
+- Ta có thể dùng hàm `mkdir(path, mode, recursive, content)`
+### Kiểm tra thư mục
+- Để xem thư mục có tồn tại ko, sử dụng hàm `is_dir(path)`
+### Đổi tên file
+- Để đổi tên 1 file, ta dùng hàm `rename(old, new)`;
+### copy file
+- Ta sử dụng hàm `copy(file1, file2)` để copy file
+### Xóa file
+- Ta sử dụng hàm `unlink(file)` để xóa file.
