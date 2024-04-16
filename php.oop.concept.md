@@ -227,3 +227,145 @@ class ConNguoi
 $cn = new ConNguoi();
 echo $cn->getName();
 ```
+# 14. Hàm ẩn danh
+- Hàm ẩn danh có thể khai báo, định nghĩa ở bất kỳ đâu và không có khả năng tái sử dụng.
+- Anonymous function chỉ tồn tại trong phạm vi của biến mà nó được định nghĩa, vì vậy nếu như biến đó vượt ra ngoài phạm vi thì hàm này cũng ko có tác dụng nữa.
+- Anonymous function thường được dùng để gán vào biến, hay được gán vào hàm, vào class như một tham số.
+- Lambda trong PHP là một Anonymous function
+## 14.1 Lambda
+- Khai báo
+```php
+function (argument)
+{
+  //code
+}
+
+//or
+
+create_function('', argument);
+```
+- Sử dụng: Lambda thường được gán vào biến, hoặc gán vào hàm, class như một tham số.
+- VD lambda vào biến
+```php
+$lambda = function () {
+  return 'Love PHP';
+};
+//gọi biến
+echo $lambda();
+```
+- VD dùng lambda như một tham số trong hàm
+```php
+function getRole($role)
+{
+  return $role();
+}
+
+echo echo getRole(function () {
+  return 'Love PHP inside';
+});
+```
+- VD lambda như một tham số trong class, phương thức
+```php
+class Role
+{
+  public $role; //la mot lambda
+
+  public function __construct($role)
+  {
+    $this->role = $role;
+  }
+
+  function getRole($role)
+  {
+    return $role(); //lambda
+  }
+}
+
+$role = new Role(function () {
+  return 'Love PHP';
+});
+
+$data = $role->role;
+echo $data();
+//output: love PHP
+
+echo $role->getRole(function () {
+  return "Love PHP & JS";
+});
+```
+- VD truyền tham số trong lambda
+```php
+$content = function ($msg) {
+  return 'Content: ' . $msg;
+};
+
+echo $content('Love PHP');
+```
+## 14.2 Closure
+- Closure cũng là một lambda, nhưng closure có thêm chức năng là có thể sử dụng các biến bên ngoài phạm vi nó được tạo ra. Closure có thể sử dụng biến tham chiếu.
+- Khai báo
+```php
+function (argument) use (scope) {
+  //code
+}
+```
+- VD sử dụng biến tham chiếu với closure
+```php
+$number = 1;
+
+$getNextNumber = function () use (&$number) {
+  return ++$number;
+};
+
+$getPrevNumber = function () use (&$number) {
+  return --$number;
+};
+
+echo $getNextNumber(); //2
+
+echo $number; //2
+
+echo $getPrevNumber(); //1
+```
+- VD closure trong class
+```php
+class Cart
+{
+  const PRICE_BUTTER = 1.00;
+  const PRICE_MILK = 3.00;
+  const PRICE_EGGS = 6.95;
+
+  protected $products = [];
+
+  public function add($product, $quantity)
+  {
+    $this->products[$product] = $quantity;
+  }
+
+  public function getQuantity($product)
+  {
+    return isset($this->products[$product]) ? $this->products[$product] : FALSE;
+  }
+
+  public function getTotal($tax)
+  {
+    $total = 0.00;
+
+    $callback = function ($quantity, $product) use ($tax, &$total) {
+      $pricePerItem = constant(__CLASS__ . "::PRICE_" . strtoupper($product));
+      $total += ($pricePerItem * $quantity) * ($tax + 1.0);
+    };
+
+    array_walk($this->products, $callback);
+    return round($total, 2);
+  }
+}
+
+$my_cart = new Cart();
+
+$my_cart->add('butter', 1);
+$my_cart->add('milk', 3);
+$my_cart->add('eggs', 6);
+
+print $my_cart->getTotal(0.05);
+```
