@@ -183,3 +183,88 @@ public function index()
 ```
 
 - Chú ý, để xóa vĩnh viễn bản ghi dùng phương thức `forceDelete()`
+
+## Query scope:
+
+- nhiều khi một rằng buộc nào đó được sử dụng rất nhiều trong các câu truy vấn ở nhiều controller. Vì thế Scope sinh ra để giải quyết vấn đề này. Có 2 loại Scope: Global và Local.
+- Đầu tiên ta sẽ tạo thư mục `app/Scopes` và tạo file `PriceScope.php`.
+
+```php
+<?php
+//PriceScope.php
+namespace App\Scopes;
+
+use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+
+class PriceScope implements Scope
+{
+    /**
+     * Apply the scope to a given Eloquent query builder.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $builder
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    public function apply(Builder $builder, Model $model)
+    {
+        $builder->where('price', '>', 200000);
+    }
+}
+```
+
+- Để đăng ký global scope thì chúng ta sẽ override lại phương thức boot() trong Model.
+  Và khi ta sử dụng truy vấn Product::all() thì chỉ những product nào có price > 200000 mới được lấy ra.
+
+```php
+<?php
+
+namespace App;
+
+use App\Scopes\PriceScope;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new PriceScope);
+    }
+}
+```
+
+- Ngoài ra các bạn còn có thể định nghĩa global scope bằng Closure.
+
+```php
+<?php
+
+namespace App;
+
+use App\Scopes\PriceScope;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('price', function (Builder $builder) {
+            return $builder->where('price', '>', 200000);
+        });
+    }
+}
+```
