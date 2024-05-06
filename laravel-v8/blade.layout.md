@@ -1,4 +1,10 @@
-# 3.1 Nhúng view khác vào trong Blade
+# Tổng hợp: PART III
+
+- Đây là phần 3 của blade template, gồm các nội dung
+  1. Nhúng view khác vào view trong Blade template
+  2. Sử dụng layout nhúng component.
+
+# 3. Nhúng view khác vào trong Blade
 
 ## @include
 
@@ -86,7 +92,7 @@ Route::get('/', function () {
   - view.name: là view ta muốn nhúng vào view hiện tại
   - $array là mảng, collection data ta muốn lặp
   - item: là giá trị sẽ được assign qua mỗi lần lặp.
-  - view.emptyL là view sẽ được nhúng khi $array rỗng - nó có bể bỏ trống.
+  - view.empty là view sẽ được nhúng khi $array rỗng - nó có bể bỏ trống.
 - VD:
 
 ```php
