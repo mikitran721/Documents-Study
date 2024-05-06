@@ -112,5 +112,6 @@
 @php
     $msg = "Love PHP";
 @endphp
+
 {{ $msg }}
 ```
