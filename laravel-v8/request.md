@@ -1,3 +1,7 @@
+# Tóm tắt:
+
+- Đây là phần 1 về Request trong Laravel, nội dung đề cập đến các tương tác với `URL, HEADER`.
+
 # 1. Khái niệm
 
 - Request là một object chứa các thông tin liên quan đến HTTP request hiện tại. Dựa vào object này ta có thể lấy được các thông tin như `input, cookie, file,...`.
